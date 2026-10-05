@@ -1,0 +1,58 @@
+.controles {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.buscador {
+  max-width: 380px;
+}
+
+.tamanio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.select {
+  width: 90px;
+}
+
+.ordenable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.vacio {
+  text-align: center;
+  color: #6b7280;
+  padding: 24px;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .controles,
+  .paginacion {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tabla {
+    font-size: 13px;
+  }
+}

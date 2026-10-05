@@ -1,0 +1,104 @@
+<section class="page">
+  <header class="page-header">
+    <h2>Clientes</h2>
+    <a routerLink="nuevo" class="btn btn-primary">+ Nuevo cliente</a>
+  </header>
+
+  <div class="controles">
+    <input
+      class="input buscador"
+      placeholder="Buscar por DNI, nombres o apellidos..."
+      [value]="filtro()"
+      (input)="filtro.set($any($event.target).value)"
+    />
+
+    <label class="tamanio">
+      Mostrar
+      <select
+        class="input select"
+        [value]="tamanio()"
+        (change)="cambiarTamanio($any($event.target).value)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+    </label>
+  </div>
+
+  @if (error()) {
+    <div class="alerta">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p>Cargando clientes...</p>
+  } @else {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th class="ordenable" (click)="ordenar('dni')">
+            DNI {{ indicadorOrden('dni') }}
+          </th>
+          <th class="ordenable" (click)="ordenar('apellidos')">
+            Apellidos y nombres {{ indicadorOrden('apellidos') }}
+          </th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (c of filtrados(); track c.id) {
+          <tr>
+            <td>{{ c.dni }}</td>
+            <td>{{ c.apellidos }}, {{ c.nombres }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.telefono ?? '—' }}</td>
+            <td>
+              <span class="badge" [class.inactivo]="!c.estado">
+                {{ c.estado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="acciones">
+              <a [routerLink]="[c.id, 'editar']" class="btn">Editar</a>
+              <button
+                type="button"
+                class="btn btn-peligro"
+                (click)="eliminar(c)">
+                Dar de baja
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="vacio">No hay clientes para mostrar.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="paginacion">
+      <button
+        type="button"
+        class="btn"
+        [disabled]="pagina() === 0"
+        (click)="anterior()">
+        Anterior
+      </button>
+
+      <span>
+        Página {{ totalPaginas() === 0 ? 0 : pagina() + 1 }}
+        de {{ totalPaginas() }} · {{ totalElementos() }} clientes
+      </span>
+
+      <button
+        type="button"
+        class="btn"
+        [disabled]="ultima() || totalPaginas() === 0"
+        (click)="siguiente()">
+        Siguiente
+      </button>
+    </div>
+  }
+</section>
