@@ -118,11 +118,6 @@ export class ClienteList implements OnInit {
   }
 
   eliminar(cliente: Cliente): void {
-    if (!cliente.estado) {
-      this.error.set('El cliente ya se encuentra inactivo.');
-      return;
-    }
-
     if (!confirm(`¿Dar de baja al cliente "${cliente.nombres} ${cliente.apellidos}"?`)) {
       return;
     }
