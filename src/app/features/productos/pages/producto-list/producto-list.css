@@ -16,6 +16,15 @@
   min-width: 180px;
 }
 
+.nota-filtro {
+  margin: -4px 0 16px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #e9f0f9;
+  color: #0f2e5c;
+  font-size: 14px;
+}
+
 .orden {
   background: none;
   border: 0;

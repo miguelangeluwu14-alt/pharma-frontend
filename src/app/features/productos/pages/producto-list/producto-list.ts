@@ -1,6 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { PaginaResponse } from '../../../../core/models/pagina-response';
@@ -20,6 +20,8 @@ export class ProductoList implements OnInit {
   private readonly productoService = inject(ProductoService);
   private readonly categoriaService = inject(CategoriaService);
 
+  readonly categoriaId = input<string>();
+
   protected readonly pagina = signal(0);
   protected readonly tamanio = signal(10);
   protected readonly ordenarPor = signal<OrdenProducto>('nombre');
@@ -34,10 +36,32 @@ export class ProductoList implements OnInit {
   protected readonly productos = computed(() => {
     const filtro = this.categoriaFiltro();
     const lista = this.resultado()?.contenido ?? [];
-    return filtro === null ? lista : lista.filter(p => p.categoriaId === filtro);
+
+    return filtro === null
+      ? lista
+      : lista.filter(p => p.categoriaId === filtro);
+  });
+
+  protected readonly categoriaDesdeUrl = computed(() => {
+    const parametro = this.categoriaId();
+    const filtro = this.categoriaFiltro();
+
+    if (!parametro || filtro === null || Number(parametro) !== filtro) {
+      return null;
+    }
+
+    return this.categorias().find(c => c.id === filtro) ?? null;
   });
 
   ngOnInit(): void {
+    const parametro = this.categoriaId();
+    const idCategoria = parametro ? Number(parametro) : null;
+
+    if (idCategoria !== null && Number.isFinite(idCategoria)) {
+      this.categoriaFiltro.set(idCategoria);
+      this.tamanio.set(100);
+    }
+
     this.categoriaService.listar().subscribe({
       next: datos => this.categorias.set(datos),
       error: (err: HttpErrorResponse) => this.error.set(mensajeError(err)),
